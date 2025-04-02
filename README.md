@@ -7,4 +7,4 @@
 This program calculates the boiling water to ground coffee ratio (17:1)
 for brewing a cup of pour over coffee in the user's desired coffee mug.
 
-It was created for CIS 122 Intro to PRogramming Logic at Portland Community College
+It was created for CIS 122 Intro to Programming Logic at Portland Community College
