@@ -1,4 +1,4 @@
-#******************************************************************************
+# ******************************************************************************
 # Author:         Alan Mazzotta
 # Lab:            Lab 9
 # Date:           8/30/2024
@@ -21,7 +21,7 @@
 #                    Determine if the mug is too small ask user to try again.
 #                    Determine if negative values were input
 #                    and ask the user to try again.
-#******************************************************************************
+# ******************************************************************************
 # Sample Run 1.0
 #
 # Welcome to the pour over brew calculator!
@@ -140,8 +140,6 @@ class Brew:
                                                                    self.__floz_cream,
                                                                    self.__coffee_oz_volume)
 
-    print(str)
-
     def get_floz_mug(self):
         return self.__floz_mug
 
@@ -175,32 +173,24 @@ def main():
     room_for_cream = True
     try_again = False
     overflow = True
-    # mug_list = []
-    # desired_list = []
-    # cream_list = []
     brew_list = []
 
     while try_again == False:
         print_welcome()  # welcome call
-        floz_mug = get_floz_mug()  # input mug volume list
-        floz_desired = get_floz_desired()  # input coffee volume list
+        floz_mug = get_floz_mug()  # input mug volume call
+        floz_desired = get_floz_desired()  # input coffee volume desired call
         room_for_cream = want_room_for_cream()  # input if cream is desired call
-        floz_cream = get_floz_cream(room_for_cream)  # input cream volume desired list
+        floz_cream = get_floz_cream(room_for_cream)  # input cream volume desired call
         print_calculating()  # computer is calculating call
+        brew_list.append(Brew(floz_mug, floz_desired, floz_cream, coffee_oz_volume))  # add this cup to history
+        coffee_oz_volume = calc_coffee_oz(brew_list)  # brew calculation call
+        brew_list[-1].set_coffee_oz_volume(coffee_oz_volume)  # record this cup's calculated coffee amount
         overflow = get_overflow(brew_list)  # output
+        # determines if the coffee will overflow or not or if negative value was input call
+        # if there is overflow  do not coffee oz volume, print final brew oz, print enjoy
+        print_final_brew_oz(brew_list, overflow)  # output
+        # of brew calculator
         try_again = get_try_again(try_again)  # input if user would like to try again call
-    #    print("\nYour brew history is...")
-    #    print("Mug size  Amount of boiling water required  Amount of cream  Amount of ground coffee")
-    #    for i in range(len(mug_list)):
-    #        print(" {: < 8.1f}  {: < 32.2f}  {: < 15.1f}  {: < 23.2f}"
-    #              .format(mug_list[i], desired_list[i], cream_list[i], brew_list[i]))
-    # determines if the coffee will overflow or not or if negative value was input call
-    # if there is overflow  do not coffee oz volume, print final brew oz, print enjoy
-    coffee_oz_volume = calc_coffee_oz(brew_list)  # brew calculation call
-    brew_list.append(Brew(floz_mug, floz_desired, floz_cream, coffee_oz_volume))
-    print_final_brew_oz(brew_list, overflow)  # output
-    # of brew calculator
-    brew = Brew(floz_mug, floz_desired, floz_cream, coffee_oz_volume)
     print_brew_history(brew_list)
 
 
@@ -208,30 +198,27 @@ def print_brew_history(brew_list):
     """
     Returns a list of the brew history
     """
-    for i in range(len(brew_list)):
-        print("\nYour brew history was...")
-        print(" {:<8}  {:<32}  {:<15}  {:<23}".format("Mug size", "Amount of boiling water required",
-                                                      "Amount of cream", "Amount of ground coffee"))
-        for brew in brew_list:
-            print(brew)
+    print("\nYour brew history was...")
+    print(" {:<8}  {:<32}  {:<15}  {:<23}".format("Mug size", "Amount of boiling water required",
+                                                  "Amount of cream", "Amount of ground coffee"))
+    for brew in brew_list:
+        print(brew)
 
 
 def get_overflow(brew_list):
     """
-    determines if the coffee will overflow or not
+    determines if the most recently added cup will overflow or not
     :param: brew_list : (list) size of user's brew requirements
     :return: (bool) True if the coffee will not overflow,
      False if coffee will overflow or negative value entered
     """
-    overflow = False
-    for i in range(len(brew_list)):
-        if brew_list[i].get_floz_desired() + brew_list[i].get_floz_cream() > brew_list[i].get_floz_mug():
-            print("\nDo not overfill you mug! Nobody likes a mess.")
-            return False
-        else:
-            print("\nEverything looks good.")
-            return True
-    return overflow
+    latest = brew_list[-1]
+    if latest.get_floz_desired() + latest.get_floz_cream() > latest.get_floz_mug():
+        print("\nDo not overfill you mug! Nobody likes a mess.")
+        return False
+    else:
+        print("\nEverything looks good.")
+        return True
 
 
 def print_welcome():
@@ -329,7 +316,7 @@ def get_try_again(try_again):
 def calc_coffee_oz(brew_list):
     """
     Calculate the boiling water (in fluid ounces) to brew coffee.
-    :param brew_list: (list) the desired coffee volume list
+    :param brew_list: (list) the brew history list
     :return: coffee_oz_volume : (float) the boiling water volume in fluid ounces:
     """
     coffee_oz_volume = 0.0
@@ -340,26 +327,21 @@ def calc_coffee_oz(brew_list):
 
 def print_final_brew_oz(brew_list, overflow):
     """
-    Print the final brew ratio in ounces.
+    Print a one-line summary for the cup just brewed, followed by the full
+    brew history table (including this cup).
     :param: brew_list : (list) the boiling water volume in fluid ounces list
     :param: overflow: (bool) True if the coffee will not overflow,
      False if coffee will overflow or negative value entered
     """
-    for brew in range(len(brew_list)):
-        if overflow == True:
-            print("\nYour brew history was...")
-            print(" {:<16}  {:<35}  {:<16}  {:<22} {:<7}".format("\nYou will require",
-                                                                 "oz (by volume) of ground coffee and",
-                                                                 "oz cream to brew", "oz of coffee in your", "oz mug."))
-            for brew in brew_list:
-                print(brew)
-                print("\nEnjoy your coffee!")
-            # print("\nYou will require", format(brew_list[i].get_coffee_oz_volume(), "0.2f"),
-            #      "oz (by volume) of ground coffee and", format((brew_list[i].get_floz_cream(), "0.1f"),
-            #                                                    "oz cream""\nto brew",
-            #                                                    format(brew_list[i].get_floz_desired(), "0.1f"),
-            #                                                    "oz of coffee in your",
-            #                                                    format(brew_list[i].get_floz_mug(), "0.1f"), "oz mug."))
+    if overflow == True:
+        latest = brew_list[-1]
+        print("\nYou will require", format(latest.get_floz_desired(), "0.1f"),
+              "oz of boiling water and", format(latest.get_coffee_oz_volume(), "0.2f"),
+              "oz (by weight) of ground coffee,"
+              "\nplus", format(latest.get_floz_cream(), "0.1f"), "oz cream,",
+              "for your", format(latest.get_floz_mug(), "0.1f"), "oz mug.")
+        print("\nEnjoy your coffee!")
+        print_brew_history(brew_list)
 
 
 main()
